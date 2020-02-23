@@ -55,13 +55,21 @@ class Target2(HolidayBase):
         HolidayBase.__init__(self, **kwargs)
 
     def _populate(self, year):
-        self[date(year, JAN, 1)] = "New Year's Day"
-        e = easter(year)
-        self[e - rd(days=2)] = "Good Friday"
-        self[e + rd(days=1)] = "Easter Monday"
-        self[date(year, MAY, 1)] = "1 May (Labour Day)"
-        self[date(year, DEC, 25)] = "Christmas Day"
-        self[date(year, DEC, 26)] = "26 December"
+        if year >= 1999:
+            self[date(year, JAN, 1)] = "New Year's Day"
+            self[date(year, DEC, 25)] = "Christmas Day"
+
+        if year > 1999:
+            e = easter(year)
+            self[e - rd(days=2)] = "Good Friday"
+            self[e + rd(days=1)] = "Easter Monday"
+            self[date(year, MAY, 1)] = "1 May (Labour Day)"
+            self[date(year, DEC, 26)] = "26 December"
+
+        if year in (1999, 2001):
+            #https://www.ecb.europa.eu/press/pr/date/1999/html/pr990715_1.en.html
+            #https://www.ecb.europa.eu/press/pr/date/2000/html/pr000525_2.en.html
+            self[date(year, DEC, 31)] = "31 December"
 
 class TAR(Target2):
     pass
