@@ -16,11 +16,37 @@ from datetime import date
 from dateutil.easter import easter
 from dateutil.relativedelta import relativedelta as rd
 
-from holidays.constants import JAN, MAY, DEC
+from holidays.constants import JAN, MAY, OCT, NOV, DEC
 from holidays.holiday_base import HolidayBase
 
-
 class EuropeanCentralBank(HolidayBase):
+    def __init__(self, **kwargs):
+        self.country = 'ECB'
+        HolidayBase.__init__(self, **kwargs)
+
+    def _populate(self, year):
+        #https://www.ecb.europa.eu/home/contacts/working-hours/html/index.en.html
+        #* : TARGET closing day
+        self[date(year, JAN, 1)] = "New Year's Day*"
+        e = easter(year)
+        self[e - rd(days=2)] = "Good Friday*"
+        self[e + rd(days=1)] = "Easter Monday*"
+        self[date(year, MAY, 1)] = "Labour Day*"
+        self[date(year, MAY, 9)] = "Anniversary of Robert Schuman's Declaration"
+        self[easter(year) + rd(days=39)] = "Ascension Day"
+        self[easter(year) + rd(days=50)] = "Whit Monday"
+        self[easter(year) + rd(days=60)] = "Corpus Christi"
+        self[date(year, OCT, 3)] = "Day of German Unity"
+        self[date(year, NOV, 1)] = "All Saints' Day"
+        self[date(year, DEC, 24)] = "Christmas Eve"
+        self[date(year, DEC, 25)] = "Christmas Day*"
+        self[date(year, DEC, 26)] = "Christmas Holiday*"
+        self[date(year, DEC, 31)] = "New Year's Eve"
+
+class ECB(EuropeanCentralBank):
+    pass
+
+class Target2(HolidayBase):
     # https://en.wikipedia.org/wiki/TARGET2
     # http://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html
 
@@ -37,10 +63,5 @@ class EuropeanCentralBank(HolidayBase):
         self[date(year, DEC, 25)] = "Christmas Day"
         self[date(year, DEC, 26)] = "26 December"
 
-
-class ECB(EuropeanCentralBank):
-    pass
-
-
-class TAR(EuropeanCentralBank):
+class TAR(Target2):
     pass
